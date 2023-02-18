@@ -10,8 +10,7 @@ Use Docker for local development
 - MongoExpress
 
 ### Project Description
-- Create Dockerfile for Nodejs application and build Docker image 
-- Run Nodejs application in Docker container and connect to MongoDB database container locally.
+- Run a Node.js application on localhost and connect to MongoDB database container locally.
 - Also run MongoExpress container as a UI of the MongoDB database.
 
 The demo app shows a simple set up for a user profile app using 
@@ -21,7 +20,7 @@ The demo app shows a simple set up for a user profile app using
 
 #### Steps to setup and start the application
 
-Step 1: Download the required [mongo](https://hub.docker.com/_/mongo) and [mongo express](https://hub.docker.com/_/mongo-express) Docker images:
+Step 1 (optional): Download the required [mongo](https://hub.docker.com/_/mongo) and [mongo express](https://hub.docker.com/_/mongo-express) Docker images:
 ```sh
 docker pull mongo
 docker pull mongo-express

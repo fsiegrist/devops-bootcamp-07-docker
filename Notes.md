@@ -72,8 +72,10 @@ Virtual machines consist of the Kernel layer and the application layer of the OS
 <br />
 
 Download the required [mongo](https://hub.docker.com/_/mongo) and [mongo express](https://hub.docker.com/_/mongo-express) images:
-- `docker pull mongo`
-- `docker pull mongo-express`
+```sh
+docker pull mongo
+docker pull mongo-express
+```
 
 Docker Network:\
 Containers that are running in the same Docker network can talk to each other using just the container name (no ip address or port number is needed).
@@ -117,6 +119,50 @@ npm start
 ```
 
 Access the application in your browser under `http://localhost:3000` and edit a user profile. You should see the data in the collection `users` of the mongo database `user-account`.
+
+</details>
+
+*****
+
+<details>
+<summary>Video: 9 - Docker Compose - Run multiple Docker containers</summary>
+<br />
+
+Docker Compose simplifies managing and running multiple Docker containers. The containers are specified in just one `docker-compose.yaml` file. To start the same containers as in video 8, the file looks like this:
+```sh
+version: '3.9'
+services:              # the services section lists all containers
+  mongodb:             # this is the name of the first container
+    image: mongo       # this is the image the container is based on
+    networks:
+      - mongo-network  # attach to this network (could be omitted)
+    ports:             # port mapping
+      - 27017:27017
+    environment:       # env variables
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  mongo-express:       # the name of the second container
+    image: mongo-express
+    networks:
+      - mongo-network  # attach to this network (could be omitted)
+    restart: always    # mongo-express depends on mongodb and has to restart
+                       # until it can successfully connect to mongodb
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
+networks:
+  mongo-network:       # define a custom network (could be omitted)
+```
+Docker Compose takes care of creating a common network for the containers (services) specified in the `docker-compose.yaml` file, so there's no need to define a custom network.
+
+To start the containers, just execute `docker-compose up` or `docker-compose -f <file-name> up` if the name of the docker compose file is not `docker-compose.yaml` (which is the default). This will pull the images of the containers and start the containers as specified. If you want to start the containers in detached mode, add the `-d` option at the end of the `docker-compose` command.
+
+To stop the containers (and the automatically created network), call `docker-compose down` or `docker-compose -f <file-name> down`.
 
 </details>
 

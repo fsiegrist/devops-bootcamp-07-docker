@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   user-profile:
-    image: 369076538622.dkr.ecr.eu-central-1.amazonaws.com/user-profile:1.0.0
+    image: 369076538622.dkr.ecr.eu-central-1.amazonaws.com/user-profile:1.1.0
     networks: 
       - mongo-net
     ports:

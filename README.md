@@ -10,3 +10,4 @@ And finally it contains the following demo projects:
 - [Use Docker for local development](./demo-projects/developing-with-docker/)
 - [Docker Compose - Run multiple Docker containers](./demo-projects/docker-compose/)
 - [Dockerize Nodejs application and push to private Docker registry](./demo-projects/dockerfile/)
+- [Deploy Docker application on a server with Docker Compose](./demo-projects/deploy-docker-application/)

@@ -246,3 +246,52 @@ Now we can push the image to the private registry:\
 </details>
 
 *****
+
+<details>
+<summary>Video: 12 - Deploy Docker application on a server</summary>
+<br />
+
+To start the application using docker compose, we have to add a container with the application to the `docker-compose.yaml` file created in video 9:
+```sh
+version: '3.9'
+services:
+  user-profile:
+    image: <private-repo-url>/user-profile:1.0.0
+    networks: 
+      - mongo-net
+    ports:
+      - 3000:3000
+  mongodb:
+    image: mongo
+    networks: 
+      - mongo-net
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+
+  mongo-express:
+    image: mongo-express
+    networks:
+      - mongo-net
+    restart: always # mongo-express depends on mongodb and has to restart
+                    # until it can successfully connect to mongodb
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=password
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+
+networks:
+  mongo-net:
+```
+
+Now that all three containers are in the same Docker network, the application container can access the mongo-db using the service name. So instead of using `mongodb://admin:password@localhost:27017` (application running directly on the docker host, outside of a container) or `mongodb://admin:password@host.docker.internal:27017` (application running in a separate container not started by docker compose => different network), we can now use `mongodb://admin:password@mongodb`.
+
+Add a file called `docker-compose.yaml` with the above content to the server where you want to start the application, go to the same directory and execute `docker-compose up -d`.
+
+</details>
+
+*****

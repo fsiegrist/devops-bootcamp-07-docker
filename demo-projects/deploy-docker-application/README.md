@@ -35,7 +35,7 @@ docker push 369076538622.dkr.ecr.eu-central-1.amazonaws.com/user-profile:1.1.0
 ```
 
 Step 2: Copy the `docker-compose.yaml` file:\
-Switch to a server / directory where you want to run the application and copy the `docker-compose.yaml` file from the `deploy-docker-application` folder into this directory.
+Switch to a server / directory where you want to run the application and copy the [docker-compose.yaml](./docker-compose.yaml) file into this directory.
 
 Step 3: Run the application
 ```sh

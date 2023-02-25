@@ -295,3 +295,41 @@ Add a file called `docker-compose.yaml` with the above content to the server whe
 </details>
 
 *****
+
+<details>
+<summary>Video: 13 - Docker Volumes - Persisting Data</summary>
+<br />
+
+There are three types of volumes:
+
+- Host volumes\
+`docker run -v /mounted/host/directory:/container/directory ...`\
+You decide which folder on the host file system you mount into the container.
+- Anonymous volumes\
+`docker run -v /container/directory ...`\
+For each container Docker automatically generates a folder that gets mounted.
+- Named volumes\
+`docker run -v name:/container/directory ...`\
+For each container Docker automatically generates a folder that gets mounted. But you can reference that folder by the name you chose.
+
+If you want to share data between containers, you can mount the same volume into more than one container.
+
+In `docker-compose.yaml` files, named volumes are specified on the same level as services and referenced on container level:
+```sh
+version '3'
+
+services:
+  mongodb:
+    image: ...
+    ports: ...
+    ...
+    volumes:
+      - db-data:/var/lib/mysql/data
+
+volumes:
+  db-data:
+```
+
+</details>
+
+*****

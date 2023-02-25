@@ -320,11 +320,11 @@ version '3'
 
 services:
   mongodb:
-    image: ...
+    image: mongo
     ports: ...
     ...
     volumes:
-      - db-data:/var/lib/mysql/data
+      - db-data:/data/db
 
 volumes:
   db-data:

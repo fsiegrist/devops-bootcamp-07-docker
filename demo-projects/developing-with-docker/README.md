@@ -55,7 +55,7 @@ docker run -d \
   mongo-express
 ```
 
-Step 5: Access the mongo-express page in your browser under `http://localhost:8081` and create a new database called `user-account`. Within this database create a collection called `users`.
+Step 5: Access the mongo-express page in your browser under `http://localhost:8081` and create a new database called `user-profile`. Within this database create a collection called `users`.
 
 Step 6: Start the node.js application executing the following commands:
 ```sh
@@ -64,4 +64,4 @@ npm install
 npm start
 ```
 
-Step 7: Access the application in your browser under `http://localhost:3000` and edit a user profile. You should see the edited data in the collection `users` of the mongo database `user-account`.
+Step 7: Access the application in your browser under `http://localhost:3000` and edit a user profile. You should see the edited data in the collection `users` of the mongo database `user-profile`.

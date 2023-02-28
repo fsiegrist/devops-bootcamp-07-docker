@@ -13,3 +13,4 @@ And finally it contains the following demo projects:
 - [Deploy Docker application on a server with Docker Compose](./demo-projects/deploy-docker-application/)
 - [Persist Data with Docker Volumes](./demo-projects/docker-volumes/)
 - [Create Docker repository on Nexus and push to it](./demo-projects/nexus-docker-repository/)
+- [Deploy Nexus as Docker container](./demo-projects/nexus-as-docker-container/)

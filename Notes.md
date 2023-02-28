@@ -374,7 +374,7 @@ Open the DigitalOcean admin site and create a new Droplet (4GB RAM, 80GB SSO Dis
 
 SSH into this Droplet and install Docker by executing `apt update` and `snap install docker`.
 
-Open `https://hub.docker.com` and search for the 'sonatype/nexus3' image. Find the commands in the documentation to create a volume and start the container. Go back to the terminal of the DigitalOcean Droplet and execute them:
+Open [Docker Hub](https://hub.docker.com) and search for the 'sonatype/nexus3' image. Find the commands in the documentation to create a volume and start the container. Go back to the terminal of the DigitalOcean Droplet and execute them:
 - `docker volume create --name nexus-data`
 - `docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3`
 

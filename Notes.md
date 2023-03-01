@@ -385,3 +385,49 @@ If you want to find out, where the data of the container is stored on the host (
 </details>
 
 *****
+
+<details>
+<summary>Video: 17 - Docker Best Practices</summary>
+<br />
+
+- Whenever available use an official Docker image as the base image for you own images
+- Use specific image versions instead of 'latest' (e.g. `FROM node:17.0.1` instead of `FROM node`)
+- Use small-sized official images (e.g. `FROM node:17.0.1-alpine` instead of `FROM node:17.0.1`)
+- Optimize caching image layers (order Dockerfile commands from least to most frequently changing)
+- Use .dockerignore to explicitly exclude files and folders
+- Make use of "Multi-Stage-Builds" (to avoid having the final image include tools only needed during build time of the image)
+  ```sh
+  # Build stage
+  FROM maven as build
+  WORKDIR /app
+  COPY myapp /app
+  RUN mvn package
+
+  # Run stage
+  FROM tomcat
+  COPY --from build /app/target/file.war /usr/local/tomcat/...
+  ...
+  ```
+  The final image will be just the image built in the last stage. All images of previous stages are just temporary.
+- Use the least privileged user
+  ```sh
+  ...
+  # create group and user
+  RUN groupadd -r tom && useradd -g tom tom
+  
+  # set ownership and permissions
+  RUN chown -R tom:tom /app
+
+  # switch to user
+  USER tom
+  ...
+  ```
+- Scan your images for vulnerabilities
+  ```sh
+  docker login
+  docker scan myapp:1.0
+  ```
+
+</details>
+
+*****

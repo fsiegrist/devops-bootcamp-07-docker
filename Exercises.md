@@ -115,7 +115,7 @@ Step 5: Start the application
 ```sh
 java -jar ./build/libs/bootcamp-java-mysql-project-1.0-SNAPSHOT.jar
 ```
-Open the application in your browser: `localhost:8080` and edit a member.
+Open the application in your browser: [localhost:8080](http://localhost:8080) and edit a member.
 
 </details>
 

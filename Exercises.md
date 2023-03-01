@@ -71,6 +71,51 @@ First you want to test the application locally with mysql database. But you don'
 
 **Steps to solve the tasks:**
 
+Step 1: Check the required environment variables\
+The environment variables our application needs to connect to the database can be found in the class [DatabaseConfig](./bootcamp-java-mysql/src/main/java/com/example/DatabaseConfig.java). They are
+- DB_USER
+- DB_PWD
+- DB_SERVER
+- DB_NAME
+
+Open [Docker Hub](https://hub.docker.com/_/mysql) and check the respective names of the environment variables supported by the MySQL Docker image. They are
+- MYSQL_USER
+- MYSQL_PASSWORD
+- n/a
+- MYSQL_DATABASE
+
+In addition the env varibale MYSQL_ROOT_PASSWORD is mandatory. It specifies the password that will be set for the MySQL root superuser account.
+
+Step 2: Start MySQL in a Docker container
+```sh
+docker run --name mysql \
+  -e MYSQL_ROOT_PASSWORD=secret \
+  -e MYSQL_USER=admin \
+  -e MYSQL_PASSWORD=admin \
+  -e MYSQL_DATABASE=team-members \
+  -p 3306:3306 \
+  -d mysql:8.0.32
+```
+
+Step 3: Build the application
+```sh
+cd ./bootcamp-java-mysql
+./gradlew build
+```
+
+Step 4: Export the environment variables needed by the application
+```sh
+export DB_USER=admin
+export DB_PWD=admin
+export DB_SERVER=localhost
+export DB_NAME=team-members
+```
+
+Step 5: Start the application
+```sh
+java -jar ./build/libs/bootcamp-java-mysql-project-1.0-SNAPSHOT.jar
+```
+Open the application in your browser: `localhost:8080` and edit a member.
 
 </details>
 

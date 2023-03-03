@@ -167,7 +167,7 @@ You have 2 containers your app needs and you don't want to start them separately
 
 **Steps to solve the tasks:**
 
-Step 1: Stop the running containers from the previous exercises\
+Step 1: Stop the running containers from the previous exercises
 ```sh
 docker stop phpmyadmin
 docker rm phpmyadmin
@@ -204,13 +204,13 @@ volumes:
   mysql-data:
 ```
 
-Step 3: Start the containers user docker-compose\
+Step 3: Start the containers user docker-compose
 ```sh
 cd </path/to/directory/container/docker-compose.yaml/>
 docker-compose up -d
 ```
 
-Step 3: Open phpmyadmin in the browser\
+Step 4: Open phpmyadmin in the browser\
 Open [localhost:8081](http://localhost:8081) in your browser and login with root:secret (see MYSQL_ROOT_PASSWORD in exercise 1) or admin:admin (see MYSQL_USER and MYSQL_PASSWORD in exercise 1).
 
 </details>

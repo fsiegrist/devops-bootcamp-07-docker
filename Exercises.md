@@ -134,6 +134,21 @@ Now you have a database, you want to be able to see the database data using a UI
 
 **Steps to solve the tasks:**
 
+Step 1: Read the documentation of the phpmyadmin image\
+Open [Docker Hub](https://hub.docker.com/_/phpmyadmin) and check how to start the container and link it to the MySQL Docker container.
+
+Step 2: Start the phpmyadmin Docker container
+```sh
+# make sure the mysql container is running
+docker ps
+
+# download the phpmyadmin image and start the container
+docker run --name phpmyadmin -d --link mysql:db -p 8081:80 phpmyadmin:5.2.1
+```
+
+Step 3: Open phpmyadmin in the browser\
+Open [localhost:8081](http://localhost:8081) in your browser and login with root:secret (see MYSQL_ROOT_PASSWORD in exercise 1) or admin:admin (see MYSQL_USER and MYSQL_PASSWORD in exercise 1). Open the 'team-members' database and browse the 'team-members' table. 
+
 </details>
 
 ******
@@ -151,6 +166,52 @@ You have 2 containers your app needs and you don't want to start them separately
 - Test that everything works again
 
 **Steps to solve the tasks:**
+
+Step 1: Stop the running containers from the previous exercises\
+```sh
+docker stop phpmyadmin
+docker rm phpmyadmin
+docker stop mysql
+docker rm mysql
+```
+
+Step 2: Create `docker-compose.yaml` file\
+Create a file called `docker-compose.yaml` with the following content:
+```sh
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0.32
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=admin    
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=team-members
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=mysql # defines the host name of the MySQL server
+                       # (= service name for containers running in the same Docker network)
+
+volumes:
+  mysql-data:
+```
+
+Step 3: Start the containers user docker-compose\
+```sh
+cd </path/to/directory/container/docker-compose.yaml/>
+docker-compose up -d
+```
+
+Step 3: Open phpmyadmin in the browser\
+Open [localhost:8081](http://localhost:8081) in your browser and login with root:secret (see MYSQL_ROOT_PASSWORD in exercise 1) or admin:admin (see MYSQL_USER and MYSQL_PASSWORD in exercise 1).
 
 </details>
 

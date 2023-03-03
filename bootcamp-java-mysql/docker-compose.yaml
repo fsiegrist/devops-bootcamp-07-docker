@@ -1,0 +1,24 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.0.32
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=admin    
+      - MYSQL_PASSWORD=admin
+      - MYSQL_DATABASE=team-members
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=mysql # defines the host name of the MySQL server
+                       # (= service name for containers running in the same Docker network)
+
+volumes:
+  mysql-data:

@@ -199,6 +199,8 @@ services:
     environment:
       - PMA_HOST=mysql # defines the host name of the MySQL server
                        # (= service name for containers running in the same Docker network)
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=secret
 
 volumes:
   mysql-data:
@@ -229,8 +231,33 @@ And since your DB and DB UI are running as docker containers, you want to make y
 
 - Create Dockerfile for your java application
 
-
 **Steps to solve the tasks:**
+
+Step 1: Choose a suitable base image\
+Open [Docker Hub](https://hub.docker.com/_/openjdk). You'll find a deprecation note saying
+```
+This image is officially deprecated and all users are recommended to find and use suitable replacements ASAP.
+```
+Below you'll find a list of recommended alternatives. We choose [Eclipse Temurin](https://hub.docker.com/_/eclipse-temurin). Open the "Tags" tab to see what tags are provided. Since we want to keep the image small and just need the jre to run the jar, we choose `eclipse-temurin:8-jre`.
+
+Step 2: Create a Dockerfile\
+Switch to the [bootcamp-java-mysql](./bootcamp-java-mysql/) folder and create a file called `Dockerfile` with the following content:
+```sh
+FROM eclipse-temurin:8-jre
+# Deprecated base image:
+# FROM openjdk:8-jdk-alpine
+
+EXPOSE 8080
+
+RUN mkdir /opt/bootcamp-java-mysql-app
+RUN addgroup -S mygroup && adduser -S myuser -G mygroup
+RUN chown -R myuser:mygroup /opt/bootcamp-java-mysql-app
+USER myuser
+
+COPY ./build/libs/bootcamp-java-mysql-project-1.0-SNAPSHOT.jar /opt/bootcamp-java-mysql-app
+
+CMD ["java", "-jar", "/opt/bootcamp-java-mysql-app/bootcamp-java-mysql-project-1.0-SNAPSHOT.jar"]
+```
 
 </details>
 
@@ -248,6 +275,21 @@ Now for you to be able to run your java app as a docker image on a remote server
 - Build the image locally and push to the repository
 
 **Steps to solve the tasks:**
+
+Step 1: Create a Droplet running Nexus as described in [Nexus as Docker container](./demo-projects/nexus-as-docker-container/) and create a private docker registry as described in [Docker repo on Nexus](./demo-projects/nexus-docker-repository/) (step 1 - step 5).
+
+Step 2: Create jar file
+```sh
+cd bootcamp-java-mysql
+./gradlew build
+```
+
+Step 3: Create docker image
+`docker build -t 104.248.134.221:8083/java-app:1.0-SNAPSHOT .`
+
+Step 4: Push image to remote private docker registry
+`docker login 104.248.134.221:8083` (username: jenkins / password: jenkins)
+`docker push 104.248.134.221:8083/java-app:1.0-SNAPSHOT`
 
 </details>
 
@@ -270,6 +312,56 @@ INFO: Again, since docker-compose is part of your application and checked in to 
 
 **Steps to solve the tasks:**
 
+Step 1: Create `docker-compose.yaml` file
+Switch to the [bootcamp-java-mysql](./bootcamp-java-mysql/) folder and create a file called `docker-compose.yaml` with the following content:
+```sh
+version: '3.9'
+services:
+  java-app:
+    image: 104.248.134.221:8083/java-app:1.0-SNAPSHOT
+    environment:
+      - DB_SERVER=mysql
+      - DB_USER=${MYSQL_USER}
+      - DB_PWD=${MYSQL_PASSWORD}
+      - DB_NAME=${MYSQL_DATABASE}
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+    restart: always
+    container_name: java-app
+
+  mysql:
+    image: mysql:8.0.32
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    volumes:
+      - mysql-data:/var/lib/mysql
+    container_name: mysql
+
+  phpmyadmin:
+    image: phpmyadmin:5.2.1
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=mysql # defines the host name of the MySQL server
+                       # (= service name for containers running in the same Docker network)
+      - PMA_PORT=3306
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - mysql
+    restart: always
+    container_name: phpmyadmin
+
+volumes:
+  mysql-data:
+```
+
 </details>
 
 ******
@@ -291,6 +383,58 @@ Finally your docker-compose file is completed and you want to run your applicati
 
 **Steps to solve the tasks:**
 
+Step 1: Create a droplet to which the ava application will be deployed\
+Login to your account on [DigitalOcean](https://cloud.digitalocean.com/login) and create a new Droplet (512MB RAM). Add firewall rule opening port 22 for IP address 31.10.157.107 (my local machine).\
+ssh into the new droplet (`ssh root@165.227.162.246`) and execute the following commands:
+```sh
+# Install docker
+apt update
+snap install docker
+```
+
+Add `"insecure-registries" : [ "104.248.134.221:8083" ]` to `/var/snap/docker/current/config/daemon.json`.
+```sh
+# restart Docker
+snap restart docker
+
+# check
+docker info # should show the additional insecure registry at the end of the output
+```
+
+Step 2: Docker login
+`docker login 104.248.134.221:8083` (username: jenkins, password: jenkins)
+
+Step 3: Adjust files
+- Change the hardcoded HOST env var in [index.html](./bootcamp-java-mysql/src/main/resources/static/index.html), line 48 to `const HOST = "165.227.162.246";`
+- Change version in [build.gradle](./bootcamp-java-mysql/build.gradle), line 8 to `1.1-SNAPSHOT`
+- Change version in [Dockerfile](./bootcamp-java-mysql/Dockerfile): `sed -i '' -e 's/1.0-SNAPSHOT/1.1-SNAPSHOT/g' Dockerfile`
+- Change version in [docker-compose.yaml](./bootcamp-java-mysql/docker-compose.yaml): `sed -i '' -e 's/1.0-SNAPSHOT/1.1-SNAPSHOT/g' docker-compse.yaml`
+
+Step 4: Rebuild application and image and push image to repo
+```sh
+./gradlew build
+docker build -t 104.248.134.221:8083/java-app:1.1-SNAPSHOT .
+docker push 104.248.134.221:8083/java-app:1.1-SNAPSHOT
+```
+
+Step 5: Copy docker-compose file to remote server\
+`scp docker-compose.yaml root@165.227.162.246:/root`
+
+Step 6: Set env variables on remote server\
+ssh into the remote server (`ssh root@165.227.162.246`) and set the following env variables:
+```sh
+export MYSQL_USER=admin
+export MYSQL_PASSWORD=admin
+export MYSQL_DATABASE=team_members
+export MYSQL_ROOT_PASSWORD=secret
+```
+
+Step 7: Run docker compose file
+```sh
+cd /root
+docker-compose up -d
+```
+
 </details>
 
 ******
@@ -307,6 +451,11 @@ Congratulations! Your application is running on the server, but you still can't 
 - Test access from the browser
 
 **Steps to solve the tasks:**
+
+Step 1: Open port 8080 on droplet\
+Add a firewall rule opening port 8080 to the firewall created to open port 22 on the droplet running the docker containers.
+
+Step 2: Open the browser and navigate to `http://165.227.162.246:8080` to see the running app.
 
 </details>
 

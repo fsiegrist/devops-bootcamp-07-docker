@@ -38,6 +38,7 @@ By default Docker only allows requests from a client going to a secure (https) e
     "insecure-registries": ["<nexus-droplet-ip>:8083"]
 }
 ```
+If Docker was installed using snap, the daemon.json file is located under `/var/snap/docker/current/config/`.\
 On a Mac we open the Docker Desktop settings, go to 'Docker Engine' and add the line `"insecure-registries": ["<nexus-droplet-ip>:8083"]` to it.
 
 Step 7: Docker login\

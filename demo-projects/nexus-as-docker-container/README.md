@@ -23,7 +23,7 @@ SSH into this Droplet and install Docker by executing `apt update` and `snap ins
 Step 3: Create volume and pull/start the Nexus image\
 Open [Docker Hub](https://hub.docker.com) and search for the 'sonatype/nexus3' image. Find the commands in the documentation to create a volume and start the container. Go back to the terminal of the DigitalOcean Droplet and execute them:
 - `docker volume create --name nexus-data`
-- `docker run -d -p 8081:8081 --name nexus -v nexus-data:/nexus-data sonatype/nexus3`
+- `docker run -d -p 8081:8081 -p 8083:8083 --name nexus -v nexus-data:/nexus-data sonatype/nexus3`
 
 Now Nexus is running (under the non root user named 'nexus') and can be accessed in the browser opening `http://<droplet-ip-address>:8081`.
 

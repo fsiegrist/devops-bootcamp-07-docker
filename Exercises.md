@@ -208,7 +208,7 @@ volumes:
 
 Step 3: Start the containers user docker-compose
 ```sh
-cd </path/to/directory/container/docker-compose.yaml/>
+cd </path/to/directory/containing/docker-compose.yaml/>
 docker-compose up -d
 ```
 
@@ -284,11 +284,11 @@ cd bootcamp-java-mysql
 ./gradlew build
 ```
 
-Step 3: Create docker image
+Step 3: Create docker image\
 `docker build -t 104.248.134.221:8083/java-app:1.0-SNAPSHOT .`
 
-Step 4: Push image to remote private docker registry
-`docker login 104.248.134.221:8083` (username: jenkins / password: jenkins)
+Step 4: Push image to remote private docker registry\
+`docker login 104.248.134.221:8083` (username: jenkins / password: jenkins)\
 `docker push 104.248.134.221:8083/java-app:1.0-SNAPSHOT`
 
 </details>
@@ -392,7 +392,7 @@ apt update
 snap install docker
 ```
 
-Add `"insecure-registries" : [ "104.248.134.221:8083" ]` to `/var/snap/docker/current/config/daemon.json`.
+Add `"insecure-registries": [ "104.248.134.221:8083" ]` to `/var/snap/docker/current/config/daemon.json`.
 ```sh
 # restart Docker
 snap restart docker
@@ -401,7 +401,7 @@ snap restart docker
 docker info # should show the additional insecure registry at the end of the output
 ```
 
-Step 2: Docker login
+Step 2: Docker login\
 `docker login 104.248.134.221:8083` (username: jenkins, password: jenkins)
 
 Step 3: Adjust files

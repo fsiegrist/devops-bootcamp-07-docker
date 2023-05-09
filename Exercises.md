@@ -279,7 +279,7 @@ Now for you to be able to run your java app as a docker image on a remote server
 
 **Steps to solve the tasks:**
 
-Step 1: Create a Droplet running Nexus as described in [Nexus as Docker container](./demo-projects/nexus-as-docker-container/) and create a private docker registry as described in [Docker repo on Nexus](./demo-projects/nexus-docker-repository/) (step 1 - step 5).
+Step 1: Create a Droplet running Nexus as described in [Nexus as Docker container](./demo-projects/7-nexus-as-docker-container/) and create a private docker registry as described in [Docker repo on Nexus](./demo-projects/6-nexus-docker-repository/) (step 1 - step 5).
 
 Step 2: Create jar file
 ```sh

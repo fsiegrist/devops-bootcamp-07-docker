@@ -43,13 +43,17 @@
     }
 </style>
 <script>
-  // HOST must be the server IP or DNS name when app running on a server
-  // and localhost when running locally
-  const HOST = "localhost";
-  //const HOST = "165.227.162.246";
+  // running locally
+  // const HOST_PORT = "localhost:8080";
+
+  // running on a remote server
+  // const HOST_PORT = "165.227.162.246:8080";
+
+  // running in a K8s cluster: ingress host mapped to container in cluster running on port 8080
+  const HOST_PORT = "java-mysql-app.com:80";
   
   (async function init() {
-    const response = await fetch(`http://${HOST}:8080/get-data`);
+    const response = await fetch(`http://${HOST_PORT}/get-data`);
     console.log("response", response);
     const data = await response.json();
     console.log("stringified data: " + JSON.stringify(data));
@@ -117,7 +121,7 @@
       });
     });
 
-    const response = await fetch(`http://${HOST}:8080/update-roles`, {
+    const response = await fetch(`http://${HOST_PORT}/update-roles`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
